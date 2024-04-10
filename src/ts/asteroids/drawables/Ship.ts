@@ -16,8 +16,11 @@ export class Ship extends Triangle implements IAnimatable {
     }
 
     update(): void {
-        console.log(this.keyController.activeKeys);
-        this.y += 2;
+        this.y -= 2;
+        //this.checkEdges();
+    }
+
+    private checkEdges() {
         if (this.x - this.width / 2 >= this.canvas.width) {
             this.x = -this.width / 2;
         } else if (this.x + this.width / 2 <= 0) {
@@ -28,5 +31,4 @@ export class Ship extends Triangle implements IAnimatable {
             this.y = -this.height / 2
         }
     }
-
 }

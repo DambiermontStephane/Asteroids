@@ -1,18 +1,19 @@
 import {IColor} from "../types/IColor";
+import {IPosition} from "../types/IPosition";
 
 export abstract class Shape implements IColor {
     protected readonly ctx: CanvasRenderingContext2D;
-    protected x: number;
-    protected y: number;
+    public readonly position: IPosition;
     protected color: IColor;
     protected isFilled: boolean;
+    public degree: number;
 
-    protected constructor(ctx: CanvasRenderingContext2D, x: number, y: number,  color: IColor, isFilled:boolean = true) {
+    protected constructor(ctx: CanvasRenderingContext2D, position: IPosition, color: IColor, degree: number = 0, isFilled: boolean = true) {
         this.ctx = ctx;
-        this.x = x;
-        this.y = y;
+        this.position = position;
         this.color = color;
         this.isFilled = isFilled;
+        this.degree = degree;
     }
 
     protected fillOrStroke() {
