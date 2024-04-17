@@ -3,12 +3,14 @@ import {IAnimatable} from "../../framework/types/IAnimatable";
 import {settings} from "../settings";
 import {KeyController} from "../KeyController";
 import {Vectors} from "../../framework/Vectors";
+import {Bullet} from "./Bullet";
 
 
 export class Ship extends Triangle implements IAnimatable {
     private readonly canvas: HTMLCanvasElement;
     private keyController: KeyController;
     private speed: Vectors;
+    private bullets: Bullet[];
 
     constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, keyController: KeyController) {
         super(ctx, new Vectors({
@@ -21,6 +23,7 @@ export class Ship extends Triangle implements IAnimatable {
             x: 0,
             y: 0,
         });
+        this.bullets = [];
         this.keyController = keyController;
         this.draw();
     }
@@ -30,6 +33,23 @@ export class Ship extends Triangle implements IAnimatable {
         this.speed.multiply(settings.ship.friction);
         (this.position as Vectors).add(this.speed);
         this.checkEdges();
+        this.bullets.forEach((bullet) => {
+            bullet.update();
+        })
+    }
+
+    draw() {
+        super.draw();
+        this.bullets.forEach((bullet) => {
+            bullet.draw();
+        })
+    }
+
+    clear() {
+        super.clear();
+        this.bullets.forEach((bullet) => {
+            bullet.clear();
+        })
     }
 
     private handleKey() {
@@ -46,6 +66,10 @@ export class Ship extends Triangle implements IAnimatable {
                     break;
                 case 'ArrowLeft':
                     this.degree += settings.ship.left;
+                    break;
+                case ' ':
+                    //ToDo: Faire un compteur jusqu'à 10, et quand arriver à la somme, push dans le tableau.
+                    this.bullets.push(new Bullet(this.ctx, this.position, this.degree, this.speed));
                     break;
             }
         });
