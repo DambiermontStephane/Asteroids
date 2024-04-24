@@ -24,8 +24,21 @@ h1 {
 }
 
 
-canvas {
-  display: block;
+.canvas-container {
+  position: relative;
   margin: 0 auto;
-  border: 1px solid white;
+
+  canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid white;
+  }
+
+  #game {
+    z-index: 2;
+  }
+
 }

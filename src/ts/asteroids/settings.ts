@@ -2,7 +2,8 @@ import {Rgb} from "../framework/colors/Rgb";
 
 export const settings = {
     canvas: {
-        id: 'game',
+        gameId: 'game',
+        backgroundId: 'background',
     },
     ship: {
         width: 20,

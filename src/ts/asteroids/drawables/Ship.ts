@@ -13,6 +13,7 @@ export class Ship extends Triangle implements IAnimatable {
     private readonly speed: Vector;
     public bullets: Bullet[];
     private bulletCounter: number;
+    shouldBeRemoved: boolean;
 
     constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, keyController: KeyController) {
         super(ctx, new Vector({
@@ -29,6 +30,7 @@ export class Ship extends Triangle implements IAnimatable {
         this.keyController = keyController;
         this.bulletCounter = 0;
         this.draw();
+        this.shouldBeRemoved = false;
     }
 
     update(): void {

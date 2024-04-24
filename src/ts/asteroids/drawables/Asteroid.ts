@@ -16,6 +16,8 @@ export class Asteroid extends Rectangle implements IAnimatable {
     private readonly ship: Ship;
     private readonly animation: Animate;
     private parent: Asteroid;
+    shouldBeRemoved: boolean;
+
 
     constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, ship: Ship, animation: Animate, parent?: Asteroid) {
         super(
@@ -38,6 +40,7 @@ export class Asteroid extends Rectangle implements IAnimatable {
         this.ship = ship;
         this.animation = animation;
         this.parent = parent;
+        this.shouldBeRemoved = false;
     }
 
     draw() {
@@ -68,13 +71,12 @@ export class Asteroid extends Rectangle implements IAnimatable {
 
         this.ship.bullets.forEach((bullet) => {
             if (this.ctx.isPointInPath(this.path, bullet.position.x, bullet.position.y)) {
-                this.animation.registerForAnimation(new Asteroid(this.ctx, this.canvas, this.ship, this.animation, this))
                 this.shouldBeRemoved = true;
+                if (!this.parent) {
+                    this.animation.registerForAnimation(new Asteroid(this.ctx, this.canvas, this.ship, this.animation, this))
+                }
             }
         })
-
         this.ctx.restore();
     }
-
-    shouldBeRemoved: boolean;
 }
