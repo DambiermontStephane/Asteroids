@@ -2,37 +2,40 @@ import {Triangle} from "../../framework/shapes/Triangle";
 import {IAnimatable} from "../../framework/types/IAnimatable";
 import {settings} from "../settings";
 import {KeyController} from "../KeyController";
-import {Vectors} from "../../framework/Vectors";
+import {Vector} from "../../framework/Vector";
 import {Bullet} from "./Bullet";
+import {Collision} from "../../framework/helpers/Collision";
 
 
 export class Ship extends Triangle implements IAnimatable {
     private readonly canvas: HTMLCanvasElement;
     private keyController: KeyController;
-    private speed: Vectors;
-    private bullets: Bullet[];
+    private readonly speed: Vector;
+    public bullets: Bullet[];
+    private bulletCounter: number;
 
     constructor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, keyController: KeyController) {
-        super(ctx, new Vectors({
+        super(ctx, new Vector({
                 x: canvas.width / 2,
                 y: canvas.height / 2
             }),
             settings.ship.width, settings.ship.height, settings.ship.color, 0, false);
         this.canvas = canvas;
-        this.speed = new Vectors({
+        this.speed = new Vector({
             x: 0,
             y: 0,
         });
         this.bullets = [];
         this.keyController = keyController;
+        this.bulletCounter = 0;
         this.draw();
     }
 
     update(): void {
         this.handleKey();
         this.speed.multiply(settings.ship.friction);
-        (this.position as Vectors).add(this.speed);
-        this.checkEdges();
+        (this.position as Vector).add(this.speed);
+        Collision.checkEdges(this, this.canvas);
         this.bullets.forEach((bullet) => {
             bullet.update();
         })
@@ -56,7 +59,7 @@ export class Ship extends Triangle implements IAnimatable {
         this.keyController.activeKeys.forEach((key) => {
             switch (key) {
                 case 'ArrowUp':
-                    this.speed.add(Vectors.fromAngle(this.degree, settings.ship.speed));
+                    this.speed.add(Vector.fromAngle(this.degree, settings.ship.speed));
                     break;
                 case 'ArrowDown':
                     this.speed.multiply(settings.ship.friction);
@@ -69,24 +72,13 @@ export class Ship extends Triangle implements IAnimatable {
                     break;
                 case ' ':
                     //ToDo: Faire un compteur jusqu'à 10, et quand arriver à la somme, push dans le tableau.
-                    this.bullets.push(new Bullet(this.ctx, this.position, this.degree, this.speed));
+                    this.bulletCounter += 1;
+                    if (this.bulletCounter > settings.ship.bulletCounter) {
+                        this.bulletCounter = 0;
+                        this.bullets.push(new Bullet(this.ctx, this.position, this.degree, this.speed));
+                    }
                     break;
             }
         });
-    }
-
-    private checkEdges() {
-        if (this.position.y > this.canvas.height + settings.ship.height) {
-            this.position.y = -settings.ship.height;
-        }
-        if (this.position.y < -settings.ship.height) {
-            this.position.y = this.canvas.height + settings.ship.height;
-        }
-        if (this.position.x > this.canvas.width + settings.ship.width) {
-            this.position.x = -settings.ship.width;
-        }
-        if (this.position.x < -settings.ship.width) {
-            this.position.x = this.canvas.width + settings.ship.width;
-        }
     }
 }

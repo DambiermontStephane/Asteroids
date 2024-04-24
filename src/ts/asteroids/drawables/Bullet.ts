@@ -1,22 +1,22 @@
 import {Circle} from "../../framework/shapes/Circle";
 import {IAnimatable} from "../../framework/types/IAnimatable";
 import {IPosition} from "../../framework/types/IPosition";
-import {Vectors} from "../../framework/Vectors";
+import {Vector} from "../../framework/Vector";
 import {settings} from "../settings";
 
 export class Bullet extends Circle implements IAnimatable {
     private readonly canvas: HTMLCanvasElement;
-    private speed: Vectors;
+    private speed: Vector;
 
-    constructor(ctx: CanvasRenderingContext2D, position: IPosition, degree: number, speed: Vectors) {
-        super(ctx, new Vectors(position), settings.bullet.radius, settings.bullet.color, degree, false);
-        this.speed = new Vectors(speed);
+    constructor(ctx: CanvasRenderingContext2D, position: IPosition, degree: number, speed: Vector) {
+        super(ctx, new Vector(position), settings.bullet.radius, settings.bullet.color, degree, false);
+        this.speed = new Vector(speed);
         this.update()
     }
 
     update(): void {
-        this.speed.add(Vectors.fromAngle(this.degree, settings.bullet.speed));
-        (this.position as Vectors).add(this.speed)
+        this.speed.add(Vector.fromAngle(this.degree, settings.bullet.speed));
+        (this.position as Vector).add(this.speed)
     }
 
     clear(): void {
